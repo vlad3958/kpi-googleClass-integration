@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "p34VDAKKdyo=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Влад\\OneDrive\\Рабочий стол\\kpi-proj\\kpi-api\\kpi.API.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Влад\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.3\\microsoft.aspnetcore.openapi.9.0.3.nupkg.sha512",
+    "C:\\Users\\Влад\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}

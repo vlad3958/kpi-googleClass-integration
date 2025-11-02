@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "4sJX5Zv56Xp11MFz82xgWt/8x/9OHe02eipObs22vcM=",
+  "Source": "kpi-api",
+  "BasePath": "_content/kpi-api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

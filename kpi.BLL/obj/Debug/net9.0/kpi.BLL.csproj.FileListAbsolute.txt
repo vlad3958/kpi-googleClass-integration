@@ -1,0 +1,11 @@
+C:\Users\Влад\OneDrive\Рабочий стол\kpi-proj\kpi.BLL\bin\Debug\net9.0\kpi.BLL.deps.json
+C:\Users\Влад\OneDrive\Рабочий стол\kpi-proj\kpi.BLL\bin\Debug\net9.0\kpi.BLL.dll
+C:\Users\Влад\OneDrive\Рабочий стол\kpi-proj\kpi.BLL\bin\Debug\net9.0\kpi.BLL.pdb
+C:\Users\Влад\OneDrive\Рабочий стол\kpi-proj\kpi.BLL\obj\Debug\net9.0\kpi.BLL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Влад\OneDrive\Рабочий стол\kpi-proj\kpi.BLL\obj\Debug\net9.0\kpi.BLL.AssemblyInfoInputs.cache
+C:\Users\Влад\OneDrive\Рабочий стол\kpi-proj\kpi.BLL\obj\Debug\net9.0\kpi.BLL.AssemblyInfo.cs
+C:\Users\Влад\OneDrive\Рабочий стол\kpi-proj\kpi.BLL\obj\Debug\net9.0\kpi.BLL.csproj.CoreCompileInputs.cache
+C:\Users\Влад\OneDrive\Рабочий стол\kpi-proj\kpi.BLL\obj\Debug\net9.0\kpi.BLL.dll
+C:\Users\Влад\OneDrive\Рабочий стол\kpi-proj\kpi.BLL\obj\Debug\net9.0\refint\kpi.BLL.dll
+C:\Users\Влад\OneDrive\Рабочий стол\kpi-proj\kpi.BLL\obj\Debug\net9.0\kpi.BLL.pdb
+C:\Users\Влад\OneDrive\Рабочий стол\kpi-proj\kpi.BLL\obj\Debug\net9.0\ref\kpi.BLL.dll

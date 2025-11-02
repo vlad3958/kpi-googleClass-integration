@@ -1,0 +1,7 @@
+C:\Users\Влад\OneDrive\Рабочий стол\kpi-proj\kpi-api\obj\Debug\net9.0\kpi.API.csproj.AssemblyReference.cache
+C:\Users\Влад\OneDrive\Рабочий стол\kpi-proj\kpi-api\obj\Debug\net9.0\kpi.API.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Влад\OneDrive\Рабочий стол\kpi-proj\kpi-api\obj\Debug\net9.0\kpi.API.AssemblyInfoInputs.cache
+C:\Users\Влад\OneDrive\Рабочий стол\kpi-proj\kpi-api\obj\Debug\net9.0\kpi.API.AssemblyInfo.cs
+C:\Users\Влад\OneDrive\Рабочий стол\kpi-proj\kpi-api\obj\Debug\net9.0\kpi.API.csproj.CoreCompileInputs.cache
+C:\Users\Влад\OneDrive\Рабочий стол\kpi-proj\kpi-api\obj\Debug\net9.0\kpi.API.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Влад\OneDrive\Рабочий стол\kpi-proj\kpi-api\obj\Debug\net9.0\kpi.API.MvcApplicationPartsAssemblyInfo.cache
