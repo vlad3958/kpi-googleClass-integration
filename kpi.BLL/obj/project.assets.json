@@ -18,23 +18,6 @@
           }
         }
       },
-      "Google.Apis.Admin.Directory.directory_v1/1.72.0.3946": {
-        "type": "package",
-        "dependencies": {
-          "Google.Apis": "1.72.0",
-          "Google.Apis.Auth": "1.72.0"
-        },
-        "compile": {
-          "lib/net6.0/Google.Apis.Admin.Directory.directory_v1.dll": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "runtime": {
-          "lib/net6.0/Google.Apis.Admin.Directory.directory_v1.dll": {
-            "related": ".pdb;.xml"
-          }
-        }
-      },
       "Google.Apis.Auth/1.72.0": {
         "type": "package",
         "dependencies": {
@@ -215,28 +198,6 @@
         "lib/netstandard2.0/Google.Apis.dll",
         "lib/netstandard2.0/Google.Apis.pdb",
         "lib/netstandard2.0/Google.Apis.xml"
-      ]
-    },
-    "Google.Apis.Admin.Directory.directory_v1/1.72.0.3946": {
-      "sha512": "JerH/Eo/NoGh+6gqiDMlf8YnRwBqx+kK49pNrIeh+36cSkRS+H4dM9IJhU8iI5Ifk2iBFHX5MrIhsA6EK/D23w==",
-      "type": "package",
-      "path": "google.apis.admin.directory.directory_v1/1.72.0.3946",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "LICENSE",
-        "NuGetIcon.png",
-        "google.apis.admin.directory.directory_v1.1.72.0.3946.nupkg.sha512",
-        "google.apis.admin.directory.directory_v1.nuspec",
-        "lib/net462/Google.Apis.Admin.Directory.directory_v1.dll",
-        "lib/net462/Google.Apis.Admin.Directory.directory_v1.pdb",
-        "lib/net462/Google.Apis.Admin.Directory.directory_v1.xml",
-        "lib/net6.0/Google.Apis.Admin.Directory.directory_v1.dll",
-        "lib/net6.0/Google.Apis.Admin.Directory.directory_v1.pdb",
-        "lib/net6.0/Google.Apis.Admin.Directory.directory_v1.xml",
-        "lib/netstandard2.0/Google.Apis.Admin.Directory.directory_v1.dll",
-        "lib/netstandard2.0/Google.Apis.Admin.Directory.directory_v1.pdb",
-        "lib/netstandard2.0/Google.Apis.Admin.Directory.directory_v1.xml"
       ]
     },
     "Google.Apis.Auth/1.72.0": {
@@ -496,7 +457,6 @@
   },
   "projectFileDependencyGroups": {
     "net9.0": [
-      "Google.Apis.Admin.Directory.directory_v1 >= 1.72.0.3946",
       "Google.Apis.Auth >= 1.72.0",
       "Google.Apis.Classroom.v1 >= 1.71.0.3924",
       "Microsoft.Extensions.Options >= 9.0.10"
@@ -552,10 +512,6 @@
       "net9.0": {
         "targetAlias": "net9.0",
         "dependencies": {
-          "Google.Apis.Admin.Directory.directory_v1": {
-            "target": "Package",
-            "version": "[1.72.0.3946, )"
-          },
           "Google.Apis.Auth": {
             "target": "Package",
             "version": "[1.72.0, )"

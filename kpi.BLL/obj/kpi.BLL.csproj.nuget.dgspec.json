@@ -50,10 +50,6 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
-            "Google.Apis.Admin.Directory.directory_v1": {
-              "target": "Package",
-              "version": "[1.72.0.3946, )"
-            },
             "Google.Apis.Auth": {
               "target": "Package",
               "version": "[1.72.0, )"

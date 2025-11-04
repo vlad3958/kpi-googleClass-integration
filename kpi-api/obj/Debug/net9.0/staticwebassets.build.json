@@ -1,8 +1,8 @@
 {
   "Version": 1,
-  "Hash": "4sJX5Zv56Xp11MFz82xgWt/8x/9OHe02eipObs22vcM=",
-  "Source": "kpi-api",
-  "BasePath": "_content/kpi-api",
+  "Hash": "kRkQhq0Uoh7sgTDay5znREg8X/XYli+P5NY7U6ioUwU=",
+  "Source": "kpi.API",
+  "BasePath": "_content/kpi.API",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],

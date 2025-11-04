@@ -1,15 +1,13 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Classroom.v1;
-using Google.Apis.Admin.Directory.directory_v1;
 using Microsoft.Extensions.Options;
 using System.IO;
 using System.Threading.Tasks;
-
+namespace kpi.BLL.Service;
 public class GoogleApiService : IGoogleApiService
 {
     public ClassroomService ClassroomService { get; }
-    public DirectoryService DirectoryService { get; }
 
     public record GoogleSettings
     {
@@ -24,11 +22,10 @@ public class GoogleApiService : IGoogleApiService
 
         string[] scopes = new[]
         {
-                "https://www.googleapis.com/auth/classroom.courses",
-                "https://www.googleapis.com/auth/classroom.rosters",
-                "https://www.googleapis.com/auth/classroom.coursework.students",
-                "https://www.googleapis.com/auth/admin.directory.user"
-            };
+            "https://www.googleapis.com/auth/classroom.courses",
+            "https://www.googleapis.com/auth/classroom.rosters",
+            "https://www.googleapis.com/auth/classroom.coursework.students"
+        };
 
         GoogleCredential cred;
         using (var stream = new FileStream(gs.ServiceAccountJsonPath, FileMode.Open, FileAccess.Read))
@@ -44,10 +41,5 @@ public class GoogleApiService : IGoogleApiService
             ApplicationName = "MySISIntegration-API"
         });
 
-        DirectoryService = new DirectoryService(new BaseClientService.Initializer
-        {
-            HttpClientInitializer = cred,
-            ApplicationName = "MySISIntegration-API"
-        });
     }
 }

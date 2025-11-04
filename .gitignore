@@ -1,0 +1,19 @@
+# .NET build outputs
+**/bin/
+**/obj/
+
+# VS/VS Code
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Local settings
+secrets.json
+
+# Service account key(s) - do not commit
+/kpi-proj-*.json
+
+# OS
+.DS_Store
+Thumbs.db
