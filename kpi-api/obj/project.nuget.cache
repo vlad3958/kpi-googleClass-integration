@@ -1,11 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "xVBbkloNyVc=",
+  "dgSpecHash": "0OymIRo0KMM=",
   "success": true,
-  "projectFilePath": "c:\\Users\\Влад\\OneDrive\\Рабочий стол\\kpi-proj\\kpi-api\\kpi.API.csproj",
+  "projectFilePath": "C:\\Users\\Влад\\OneDrive\\Рабочий стол\\kpi-proj\\kpi-api\\kpi.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Влад\\.nuget\\packages\\google.apis\\1.72.0\\google.apis.1.72.0.nupkg.sha512",
-    "C:\\Users\\Влад\\.nuget\\packages\\google.apis.admin.directory.directory_v1\\1.72.0.3946\\google.apis.admin.directory.directory_v1.1.72.0.3946.nupkg.sha512",
     "C:\\Users\\Влад\\.nuget\\packages\\google.apis.auth\\1.72.0\\google.apis.auth.1.72.0.nupkg.sha512",
     "C:\\Users\\Влад\\.nuget\\packages\\google.apis.classroom.v1\\1.71.0.3924\\google.apis.classroom.v1.1.71.0.3924.nupkg.sha512",
     "C:\\Users\\Влад\\.nuget\\packages\\google.apis.core\\1.72.0\\google.apis.core.1.72.0.nupkg.sha512",

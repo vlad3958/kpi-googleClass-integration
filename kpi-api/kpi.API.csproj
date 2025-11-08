@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3" />
-    <PackageReference Include="Google.Apis.Admin.Directory.directory_v1" Version="1.72.0.3946" />
     <PackageReference Include="Google.Apis.Auth" Version="1.72.0" />
     <PackageReference Include="Google.Apis.Classroom.v1" Version="1.71.0.3924" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.10" />

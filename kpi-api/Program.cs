@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Read config (ServiceAccountJsonPath, ImpersonatedAdmin) from appsettings.json or env
 builder.Services.Configure<GoogleSettings>(builder.Configuration.GetSection("GoogleSettings"));
 
-// Register Google service (wrapping Google Credential, ClassroomService, DirectoryService)
+// Register Google service (service account with Workspace DWD)
 builder.Services.AddSingleton<IGoogleApiService, GoogleApiService>();
 
 builder.Services.AddControllers();
