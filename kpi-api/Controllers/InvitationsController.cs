@@ -29,11 +29,7 @@ namespace kpi.API.Controllers
             _google = google;
         }
 
-        // Single endpoint: invite teachers (optional) and students to a course.
-        // Accepts either numeric courseId OR a full Classroom URL OR the base64 token after /c/.
-        // POST: api/invitations/course/{courseIdOrUrlOrToken}/bulk
-        // Body: { "studentEmails": ["s1@x.com", "s2@x.com"], "teacherEmails": ["t1@x.com", "t2@x.com"] }
-        [HttpPost("course/{courseId}/bulk")]
+         [HttpPost("course/{courseId}/bulk")]
         public ActionResult BulkForCourse(string courseId, [FromBody] BulkCourseInvitationRequest body)
         {
             if (string.IsNullOrWhiteSpace(courseId)) return BadRequest("courseId is required");
@@ -61,18 +57,6 @@ namespace kpi.API.Controllers
 
                     foreach (var tEmail in validTeacherEmails)
                     {
-                        try
-                        {
-                            var t = new Teacher { UserId = tEmail };
-                            service.Courses.Teachers.Create(t, resolvedCourseId).Execute();
-                            teacherResults.Add(new TeacherOpResult { Email = tEmail, Mode = "added", Success = true, Error = null });
-                        }
-                        catch (Google.GoogleApiException tex) when ((int)tex.HttpStatusCode == 409)
-                        {
-                            teacherResults.Add(new TeacherOpResult { Email = tEmail, Mode = "exists", Success = true, Error = null });
-                        }
-                        catch (Google.GoogleApiException)
-                        {
                             try
                             {
                                 var inv = new Invitation { CourseId = resolvedCourseId, UserId = tEmail, Role = "TEACHER" };
@@ -83,11 +67,10 @@ namespace kpi.API.Controllers
                             {
                                 teacherResults.Add(new TeacherOpResult { Email = tEmail, Mode = "failed", Success = false, Error = tex2.Message });
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            teacherResults.Add(new TeacherOpResult { Email = tEmail, Mode = "failed", Success = false, Error = ex.Message });
-                        }
+                            catch (Exception ex)
+                                {
+                                    teacherResults.Add(new TeacherOpResult { Email = tEmail, Mode = "failed", Success = false, Error = ex.Message });
+                                }
                     }
                 }
 

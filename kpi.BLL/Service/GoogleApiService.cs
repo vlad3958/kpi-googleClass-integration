@@ -14,7 +14,7 @@ public class GoogleApiService : IGoogleApiService
     public record GoogleSettings
     {
         public string ServiceAccountJsonPath { get; init; } = "kpi-proj-476910-4945d2725830.json";
-        public string ImpersonatedAdmin { get; init; } = "ber@vlad7930.work.gd";
+        public string ImpersonatedAdmin { get; init; } = "ber@vlad.work.gd";
     }
     public GoogleApiService(IOptions<GoogleSettings> options)
     {
