@@ -3,11 +3,7 @@ using Google.Apis.Classroom.v1.Data;
 using kpi.API.Dto;
 using kpi.BLL.Service;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace kpi.API.Controllers
 {
@@ -22,9 +18,6 @@ namespace kpi.API.Controllers
             _google = google;
         }
 
-        // ==========================================
-        // 1. —“¬Œ–≈ÕÕﬂ  ”–—”
-        // ==========================================
         [HttpPost("create-full")]
         public async Task<ActionResult> CreateCourseWithRoster([FromBody] CreateClassroomRequest request)
         {
@@ -43,8 +36,7 @@ namespace kpi.API.Controllers
             if (cleanTeachers.Count == 0)
                 return BadRequest("At least one teacher email is required.");
 
-            var ownerId = cleanTeachers[0];
-            var teachersToInvite = cleanTeachers.Skip(1).ToList();
+            var ownerId = "ber@vlad.work.gd";
 
             var service = _google.ClassroomService;
 
@@ -82,16 +74,13 @@ namespace kpi.API.Controllers
             };
 
             var tasks = new List<Task>();
-            foreach (var email in teachersToInvite) tasks.Add(InviteUserAsync(service, courseId, email, "TEACHER", report.Errors));
+            foreach (var email in cleanTeachers) tasks.Add(InviteUserAsync(service, courseId, email, "TEACHER", report.Errors));
             foreach (var email in cleanStudents) tasks.Add(InviteUserAsync(service, courseId, email, "STUDENT", report.Errors));
             await Task.WhenAll(tasks);
 
             return Ok(report);
         }
 
-        // ==========================================
-        // 2. Œ“–»Ã¿ÕÕﬂ Œ÷≤ÕŒ  (—”Ã¿ ¡¿À≤¬)
-        // ==========================================
         [HttpGet("grades/all")]
         public async Task<ActionResult<AllGradesResponse>> GetAllGrades()
         {
@@ -131,9 +120,6 @@ namespace kpi.API.Controllers
             return Ok(result);
         }
 
-        // ==========================================
-        // ƒŒœŒÃ≤∆Õ≤ Ã≈“Œƒ»
-        // ==========================================
 
         private async Task<CourseGrades?> GetGradesForSingleCourseAsync(ClassroomService service, Course course)
         {
@@ -152,7 +138,6 @@ namespace kpi.API.Controllers
 
                 if (courseWorks == null || courseWorks.Count == 0)
                 {
-                    // —ÚÛ‰ÂÌÚË ∫, Á‡‚‰‡Ì¸ ÌÂÏ‡∫ -> —ÛÏ‡ 0
                     return new CourseGrades
                     {
                         CourseId = course.Id,
