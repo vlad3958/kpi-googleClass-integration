@@ -1,12 +1,13 @@
+using Google.Apis.Classroom.v1;
 using Google.Apis.Classroom.v1.Data;
 using kpi.API.Dto;
 using kpi.BLL.Service;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
-using System.Linq;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace kpi.API.Controllers
 {
@@ -14,14 +15,6 @@ namespace kpi.API.Controllers
     [Route("api/[controller]")]
     public class InvitationsController : ControllerBase
     {
-        private sealed class TeacherOpResult
-        {
-            public string Email { get; set; } = string.Empty;
-            public string Mode { get; set; } = string.Empty; // added | invited | exists | failed
-            public bool Success { get; set; }
-            public string? Error { get; set; }
-        }
-
         private readonly IGoogleApiService _google;
 
         public InvitationsController(IGoogleApiService google)
@@ -29,212 +22,235 @@ namespace kpi.API.Controllers
             _google = google;
         }
 
-         [HttpPost("course/{courseId}/bulk")]
-        public ActionResult BulkForCourse(string courseId, [FromBody] BulkCourseInvitationRequest body)
+        // ==========================================
+        // 1. —“¬Œ–≈ÕÕﬂ  ”–—”
+        // ==========================================
+        [HttpPost("create-full")]
+        public async Task<ActionResult> CreateCourseWithRoster([FromBody] CreateClassroomRequest request)
         {
-            if (string.IsNullOrWhiteSpace(courseId)) return BadRequest("courseId is required");
-            if (body == null) return BadRequest("Request body is required");
-            if (!TryResolveCourseId(courseId, out var resolvedCourseId))
-            {
-                return BadRequest(new { error = "Unable to resolve courseId from input.", input = courseId, hint = "Pass numeric ID or full Classroom URL (with courseid=... or /c/<token>)." });
-            }
+            if (request == null) return BadRequest("Body is required");
+
+            var cleanTeachers = request.TeacherEmails?
+                .Where(e => !string.IsNullOrWhiteSpace(e))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList() ?? new List<string>();
+
+            var cleanStudents = request.StudentEmails?
+                .Where(e => !string.IsNullOrWhiteSpace(e))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList() ?? new List<string>();
+
+            if (cleanTeachers.Count == 0)
+                return BadRequest("At least one teacher email is required.");
+
+            var ownerId = cleanTeachers[0];
+            var teachersToInvite = cleanTeachers.Skip(1).ToList();
 
             var service = _google.ClassroomService;
+
+            var courseObj = new Course
+            {
+                Name = request.CourseName,
+                Section = request.Section,
+                DescriptionHeading = request.Description,
+                Room = request.Room,
+                OwnerId = ownerId,
+                CourseState = "ACTIVE"
+            };
+
+            Course createdCourse;
             try
             {
+                createdCourse = await service.Courses.Create(courseObj).ExecuteAsync();
+            }
+            catch (Google.GoogleApiException gex)
+            {
+                return StatusCode((int)gex.HttpStatusCode, new { error = "Failed to create course", googleMessage = gex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "Unknown error", details = ex.Message });
+            }
 
-                var teacherResults = new List<TeacherOpResult>();
-                int totalTeachersProcessed = 0;
-                if (body.TeacherEmails != null && body.TeacherEmails.Count > 0)
+            var courseId = createdCourse.Id;
+            var report = new
+            {
+                CourseId = courseId,
+                Link = createdCourse.AlternateLink,
+                Owner = createdCourse.OwnerId,
+                Errors = new List<string>()
+            };
+
+            var tasks = new List<Task>();
+            foreach (var email in teachersToInvite) tasks.Add(InviteUserAsync(service, courseId, email, "TEACHER", report.Errors));
+            foreach (var email in cleanStudents) tasks.Add(InviteUserAsync(service, courseId, email, "STUDENT", report.Errors));
+            await Task.WhenAll(tasks);
+
+            return Ok(report);
+        }
+
+        // ==========================================
+        // 2. Œ“–»Ã¿ÕÕﬂ Œ÷≤ÕŒ  (—”Ã¿ ¡¿À≤¬)
+        // ==========================================
+        [HttpGet("grades/all")]
+        public async Task<ActionResult<AllGradesResponse>> GetAllGrades()
+        {
+            var service = _google.ClassroomService;
+            var adminEmail = "ber@vlad.work.gd";
+
+            var coursesRequest = service.Courses.List();
+            coursesRequest.TeacherId = "me";
+
+            var coursesResponse = await coursesRequest.ExecuteAsync();
+            var courses = coursesResponse.Courses;
+
+            if (courses == null || courses.Count == 0)
+            {
+                return Ok(new AllGradesResponse { AdminEmail = adminEmail, Courses = new List<CourseGrades>() });
+            }
+
+            var result = new AllGradesResponse { AdminEmail = adminEmail };
+
+            var semaphore = new System.Threading.SemaphoreSlim(10);
+            var tasks = courses.Select(async course =>
+            {
+                await semaphore.WaitAsync();
+                try
                 {
-                    var validTeacherEmails = body.TeacherEmails
-                        .Select(e => e?.Trim())
-                        .Where(e => !string.IsNullOrWhiteSpace(e) && IsLikelyEmail(e!))
-                        .Select(e => e!)
-                        .Distinct(System.StringComparer.OrdinalIgnoreCase)
-                        .ToList();
-                    totalTeachersProcessed = validTeacherEmails.Count;
+                    return await GetGradesForSingleCourseAsync(service, course);
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            });
 
-                    foreach (var tEmail in validTeacherEmails)
+            var processedCourses = await Task.WhenAll(tasks);
+            result.Courses = processedCourses.Where(c => c != null).ToList()!;
+
+            return Ok(result);
+        }
+
+        // ==========================================
+        // ƒŒœŒÃ≤∆Õ≤ Ã≈“Œƒ»
+        // ==========================================
+
+        private async Task<CourseGrades?> GetGradesForSingleCourseAsync(ClassroomService service, Course course)
+        {
+            try
+            {
+                var studentsReq = service.Courses.Students.List(course.Id);
+                var studentsRes = await studentsReq.ExecuteAsync();
+                var students = studentsRes.Students;
+
+                if (students == null || students.Count == 0)
+                    return new CourseGrades { CourseId = course.Id, CourseName = course.Name, Link = course.AlternateLink };
+
+                var workReq = service.Courses.CourseWork.List(course.Id);
+                var workRes = await workReq.ExecuteAsync();
+                var courseWorks = workRes.CourseWork;
+
+                if (courseWorks == null || courseWorks.Count == 0)
+                {
+                    // —ÚÛ‰ÂÌÚË ∫, Á‡‚‰‡Ì¸ ÌÂÏ‡∫ -> —ÛÏ‡ 0
+                    return new CourseGrades
                     {
-                            try
-                            {
-                                var inv = new Invitation { CourseId = resolvedCourseId, UserId = tEmail, Role = "TEACHER" };
-                                service.Invitations.Create(inv).Execute();
-                                teacherResults.Add(new TeacherOpResult { Email = tEmail, Mode = "invited", Success = true, Error = null });
-                            }
-                            catch (Google.GoogleApiException tex2)
-                            {
-                                teacherResults.Add(new TeacherOpResult { Email = tEmail, Mode = "failed", Success = false, Error = tex2.Message });
-                            }
-                            catch (Exception ex)
-                                {
-                                    teacherResults.Add(new TeacherOpResult { Email = tEmail, Mode = "failed", Success = false, Error = ex.Message });
-                                }
-                    }
+                        CourseId = course.Id,
+                        CourseName = course.Name,
+                        Link = course.AlternateLink,
+                        Students = students.Select(s => new StudentGrades
+                        {
+                            StudentName = s.Profile.Name.FullName,
+                            Email = s.Profile.EmailAddress,
+                            UserId = s.UserId,
+                            TotalScore = 0
+                        }).ToList()
+                    };
                 }
 
-                // Invite students (always as STUDENT). Ignore empty or invalid emails silently.
-                var validStudentEmails = (body.StudentEmails ?? new List<string>())
-                    .Select(e => e?.Trim())
-                    .Where(e => !string.IsNullOrWhiteSpace(e) && IsLikelyEmail(e!))
-                    .Select(e => e!)
-                    .Distinct(System.StringComparer.OrdinalIgnoreCase)
-                    .ToList();
+                var workMap = courseWorks.ToDictionary(k => k.Id, v => new { v.Title, v.MaxPoints });
 
-                var studentResults = validStudentEmails.Select(email =>
-                {
-                    try
-                    {
-                        var invitation = new Invitation
-                        {
-                            CourseId = resolvedCourseId,
-                            UserId = email,
-                            Role = "STUDENT"
-                        };
-                        var id = service.Invitations.Create(invitation).Execute().Id;
-                        return new BulkInvitationResult
-                        {
-                            Request = new InvitationRequest { CourseId = resolvedCourseId, UserEmail = email, Role = "STUDENT" },
-                            Success = true,
-                            InvitationId = id
-                        };
-                    }
-                    catch (Google.GoogleApiException gex) when ((int)gex.HttpStatusCode == 409)
-                    {
-                        return new BulkInvitationResult
-                        {
-                            Request = new InvitationRequest { CourseId = resolvedCourseId, UserEmail = email, Role = "STUDENT" },
-                            Success = true,
-                            InvitationId = null,
-                            Error = "Already invited or enrolled (409)."
-                        };
-                    }
-                    catch (Google.GoogleApiException gex)
-                    {
-                        return new BulkInvitationResult
-                        {
-                            Request = new InvitationRequest { CourseId = resolvedCourseId, UserEmail = email, Role = "STUDENT" },
-                            Success = false,
-                            Error = gex.Message
-                        };
-                    }
-                    catch (Exception ex)
-                    {
-                        return new BulkInvitationResult
-                        {
-                            Request = new InvitationRequest { CourseId = resolvedCourseId, UserEmail = email, Role = "STUDENT" },
-                            Success = false,
-                            Error = ex.Message
-                        };
-                    }
-                }).ToList();
+                var subsReq = service.Courses.CourseWork.StudentSubmissions.List(course.Id, "-");
+                var subsRes = await subsReq.ExecuteAsync();
+                var allSubmissions = subsRes.StudentSubmissions;
 
-                var summary = new
+                var resultStudents = new List<StudentGrades>();
+
+                foreach (var student in students)
                 {
-                    teachers = new
+                    var sData = new StudentGrades
                     {
-                        total = totalTeachersProcessed,
-                        added = teacherResults.Count(r => r.Success && r.Mode == "added"),
-                        invited = teacherResults.Count(r => r.Success && r.Mode == "invited"),
-                        exists = teacherResults.Count(r => r.Success && r.Mode == "exists"),
-                        failed = teacherResults.Count(r => !r.Success),
-                        results = teacherResults
-                    },
-                    students = new
+                        StudentName = student.Profile.Name.FullName,
+                        Email = student.Profile.EmailAddress,
+                        UserId = student.UserId
+                    };
+
+                    if (allSubmissions != null)
                     {
-                        total = studentResults.Count,
-                        success = studentResults.Count(r => r.Success),
-                        failed = studentResults.Count(r => !r.Success),
-                        results = studentResults
+                        var studentSubs = allSubmissions.Where(sub => sub.UserId == student.UserId);
+                        foreach (var sub in studentSubs)
+                        {
+                            if (workMap.TryGetValue(sub.CourseWorkId, out var workInfo))
+                            {
+                                sData.Grades.Add(new GradeItem
+                                {
+                                    WorkTitle = workInfo.Title,
+                                    MaxPoints = workInfo.MaxPoints,
+                                    Score = sub.AssignedGrade ?? sub.DraftGrade,
+                                    State = sub.State
+                                });
+                            }
+                        }
                     }
+
+                    if (sData.Grades.Any(g => g.Score.HasValue))
+                    {
+                        sData.TotalScore = sData.Grades
+                            .Where(g => g.Score.HasValue)
+                            .Sum(g => g.Score.Value);
+                    }
+                    else
+                    {
+                        sData.TotalScore = 0;
+                    }
+
+                    resultStudents.Add(sData);
+                }
+
+                return new CourseGrades
+                {
+                    CourseId = course.Id,
+                    CourseName = course.Name,
+                    Link = course.AlternateLink,
+                    Students = resultStudents
                 };
-                return Ok(summary);
             }
-            catch (Google.GoogleApiException gex) when (gex.HttpStatusCode == HttpStatusCode.NotFound)
+            catch
             {
-                return NotFound(new { error = "Course not found. Pass numeric courseId or a valid Classroom URL (not enrollment code).", details = gex.Message });
+                return null;
+            }
+        }
+
+        private async Task InviteUserAsync(ClassroomService service, string courseId, string email, string role, List<string> errorLog)
+        {
+            if (!IsLikelyEmail(email)) return;
+            var invitation = new Invitation { CourseId = courseId, UserId = email, Role = role };
+            try
+            {
+                await service.Invitations.Create(invitation).ExecuteAsync();
+            }
+            catch (Google.GoogleApiException gex) when (gex.HttpStatusCode == HttpStatusCode.Conflict) { }
+            catch (Exception ex)
+            {
+                lock (errorLog) { errorLog.Add($"Failed to invite {email} as {role}: {ex.Message}"); }
             }
         }
 
         private static bool IsLikelyEmail(string value)
         {
             if (string.IsNullOrWhiteSpace(value)) return false;
-            // Lightweight heuristic: exactly one '@', local and domain parts present, domain contains a dot, and no spaces
             var parts = value.Split('@');
-            if (parts.Length != 2) return false;
-            if (parts[0].Length == 0) return false;
-            var domain = parts[1];
-            if (domain.Length < 3 || !domain.Contains('.')) return false;
-            if (value.Any(char.IsWhiteSpace)) return false;
-            return true;
-        }
-
-        private static bool TryResolveCourseId(string input, out string courseId)
-        {
-            courseId = string.Empty;
-            if (string.IsNullOrWhiteSpace(input)) return false;
-            try { input = Uri.UnescapeDataString(input); } catch { }
-
-            // Case 1: already numeric
-            if (input.All(char.IsDigit))
-            {
-                courseId = input;
-                return true;
-            }
-
-            // Case 2: full URL
-            if (Uri.TryCreate(input, UriKind.Absolute, out var uri))
-            {
-                // try ?courseid=...
-                var query = QueryHelpers.ParseQuery(uri.Query);
-                if (query.TryGetValue("courseid", out var qVal))
-                {
-                    var v = qVal.ToString();
-                    if (v.All(char.IsDigit)) { courseId = v; return true; }
-                }
-
-                // try /c/<segment>
-                var segments = uri.AbsolutePath.Split('/', System.StringSplitOptions.RemoveEmptyEntries);
-                var idx = System.Array.IndexOf(segments, "c");
-                if (idx >= 0 && idx + 1 < segments.Length)
-                {
-                    var token = segments[idx + 1];
-                    if (token.All(char.IsDigit)) { courseId = token; return true; }
-                    if (TryDecodeBase64UrlToken(token, out var decoded) && decoded.All(char.IsDigit))
-                    {
-                        courseId = decoded; return true;
-                    }
-                }
-            }
-            else
-            {
-                // Case 3: just the token
-                if (TryDecodeBase64UrlToken(input, out var decoded) && decoded.All(char.IsDigit))
-                {
-                    courseId = decoded; return true;
-                }
-            }
-            return false;
-        }
-
-        private static bool TryDecodeBase64UrlToken(string token, out string decoded)
-        {
-            decoded = string.Empty;
-            if (string.IsNullOrWhiteSpace(token)) return false;
-            try
-            {
-                var b64 = token.Replace('-', '+').Replace('_', '/');
-                switch (b64.Length % 4)
-                {
-                    case 2: b64 += "=="; break;
-                    case 3: b64 += "="; break;
-                }
-                var bytes = System.Convert.FromBase64String(b64);
-                decoded = Encoding.ASCII.GetString(bytes).Trim();
-                return true;
-            }
-            catch { return false; }
+            return parts.Length == 2 && parts[1].Contains('.') && !value.Any(char.IsWhiteSpace);
         }
     }
 }
