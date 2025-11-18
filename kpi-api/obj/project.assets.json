@@ -36,11 +36,11 @@
           }
         }
       },
-      "Google.Apis.Classroom.v1/1.71.0.3924": {
+      "Google.Apis.Classroom.v1/1.72.0.3960": {
         "type": "package",
         "dependencies": {
-          "Google.Apis": "1.71.0",
-          "Google.Apis.Auth": "1.71.0"
+          "Google.Apis": "1.72.0",
+          "Google.Apis.Auth": "1.72.0"
         },
         "compile": {
           "lib/net6.0/Google.Apis.Classroom.v1.dll": {
@@ -346,16 +346,16 @@
         "lib/netstandard2.0/Google.Apis.Auth.xml"
       ]
     },
-    "Google.Apis.Classroom.v1/1.71.0.3924": {
-      "sha512": "Hmm1m72WxK7PikGFbrTE3nQwfyYOhECrWeK8Xb0uJCUzgnRUxNm0Vg2CZVNBv6z87tLD0RR7Qg/IeTEVVzWuhA==",
+    "Google.Apis.Classroom.v1/1.72.0.3960": {
+      "sha512": "H5jh8IfEMKtg21pABSS19ahMP0Y58zh/IAm2WGIcenOLgDNYT/aF3TrnXpzzdHoP6M7iaOZHVdWM1UbVdB8vvg==",
       "type": "package",
-      "path": "google.apis.classroom.v1/1.71.0.3924",
+      "path": "google.apis.classroom.v1/1.72.0.3960",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "LICENSE",
         "NuGetIcon.png",
-        "google.apis.classroom.v1.1.71.0.3924.nupkg.sha512",
+        "google.apis.classroom.v1.1.72.0.3960.nupkg.sha512",
         "google.apis.classroom.v1.nuspec",
         "lib/net462/Google.Apis.Classroom.v1.dll",
         "lib/net462/Google.Apis.Classroom.v1.pdb",
@@ -943,7 +943,7 @@
   "projectFileDependencyGroups": {
     "net9.0": [
       "Google.Apis.Auth >= 1.72.0",
-      "Google.Apis.Classroom.v1 >= 1.71.0.3924",
+      "Google.Apis.Classroom.v1 >= 1.72.0.3960",
       "Microsoft.AspNetCore.OpenApi >= 9.0.3",
       "Microsoft.Extensions.Options >= 9.0.10",
       "Swashbuckle.AspNetCore >= 9.0.6",
@@ -951,23 +951,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Balbe\\.nuget\\packages\\": {},
+    "C:\\Users\\Влад\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Balbe\\source\\repos\\kpi-googleClass-integration\\kpi-api\\kpi.API.csproj",
+      "projectUniqueName": "C:\\Users\\Влад\\OneDrive\\Рабочий стол\\kpi-proj\\kpi-api\\kpi.API.csproj",
       "projectName": "kpi.API",
-      "projectPath": "C:\\Users\\Balbe\\source\\repos\\kpi-googleClass-integration\\kpi-api\\kpi.API.csproj",
-      "packagesPath": "C:\\Users\\Balbe\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Balbe\\Source\\Repos\\kpi-googleClass-integration\\kpi-api\\obj\\",
+      "projectPath": "C:\\Users\\Влад\\OneDrive\\Рабочий стол\\kpi-proj\\kpi-api\\kpi.API.csproj",
+      "packagesPath": "C:\\Users\\Влад\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Влад\\OneDrive\\Рабочий стол\\kpi-proj\\kpi-api\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Balbe\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Влад\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -976,15 +976,14 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "C:\\Users\\Balbe\\source\\repos\\kpi-googleClass-integration\\kpi.BLL\\kpi.BLL.csproj": {
-              "projectPath": "C:\\Users\\Balbe\\source\\repos\\kpi-googleClass-integration\\kpi.BLL\\kpi.BLL.csproj"
+            "C:\\Users\\Влад\\OneDrive\\Рабочий стол\\kpi-proj\\kpi.BLL\\kpi.BLL.csproj": {
+              "projectPath": "C:\\Users\\Влад\\OneDrive\\Рабочий стол\\kpi-proj\\kpi.BLL\\kpi.BLL.csproj"
             }
           }
         }
@@ -999,7 +998,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.300"
+      "SdkAnalysisLevel": "9.0.200"
     },
     "frameworks": {
       "net9.0": {
@@ -1011,7 +1010,7 @@
           },
           "Google.Apis.Classroom.v1": {
             "target": "Package",
-            "version": "[1.71.0.3924, )"
+            "version": "[1.72.0.3960, )"
           },
           "Microsoft.AspNetCore.OpenApi": {
             "target": "Package",
@@ -1045,7 +1044,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

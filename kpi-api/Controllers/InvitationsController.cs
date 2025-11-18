@@ -81,9 +81,6 @@ namespace kpi.API.Controllers
             return Ok(report);
         }
 
-        // ==========================================
-        // 2. ��������� �ֲ��� (���� ��˲�)
-        // ==========================================
         [HttpGet("grades/all")]
         public async Task<ActionResult<AllGradesResponse>> GetAllGrades()
         {
@@ -123,9 +120,6 @@ namespace kpi.API.Controllers
             return Ok(result);
         }
 
-        // ==========================================
-        // ����̲�Ͳ ������
-        // ==========================================
 
         private async Task<CourseGrades?> GetGradesForSingleCourseAsync(ClassroomService service, Course course)
         {
@@ -144,7 +138,6 @@ namespace kpi.API.Controllers
 
                 if (courseWorks == null || courseWorks.Count == 0)
                 {
-                    // �������� �, ������� ���� -> ���� 0
                     return new CourseGrades
                     {
                         CourseId = course.Id,
