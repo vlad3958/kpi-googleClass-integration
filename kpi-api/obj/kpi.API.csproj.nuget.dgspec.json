@@ -150,7 +150,7 @@
             },
             "Google.Apis.Classroom.v1": {
               "target": "Package",
-              "version": "[1.71.0.3924, )"
+              "version": "[1.72.0.3960, )"
             },
             "Microsoft.Extensions.Options": {
               "target": "Package",
