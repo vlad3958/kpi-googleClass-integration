@@ -289,7 +289,7 @@
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
           "Google.Apis.Auth": "1.72.0",
-          "Google.Apis.Classroom.v1": "1.71.0.3924",
+          "Google.Apis.Classroom.v1": "1.72.0.3960",
           "Microsoft.Extensions.Options": "9.0.10"
         },
         "compile": {
